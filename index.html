@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Plastic Waste Trade Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+</head>
+<body>
+    <header class="hero-section">
+        <div class="hero-content">
+            <div class="badge">2002-2024 • Global Trade Analysis</div>
+            <h1 class="hero-title">
+                The Plastic
+                <span class="gradient-text">Waste Trade</span>
+            </h1>
+            <!-- <p class="hero-subtitle">
+                127 million tons of plastic waste across borders every year
+            </p> -->
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">11M</div>
+                    <div class="stat-label">Tons traded annually</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">47+</div>
+                    <div class="stat-label">Countries involved</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">$4B</div>
+                    <div class="stat-label">Market value</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    
+    <div class="dashboard-container">
+        <!-- Global Controls Bar -->
+
+        <div class="dashboard-intro">
+            <section class="chart-panel summary-panel">
+                <div class="panel-header">
+                    <h3>Major Trading Countries Over Time</h3>
+                    <div class="chart-controls">
+                        <button class="chart-toggle active" data-view="exports">Exports</button>
+                        <button class="chart-toggle" data-view="imports">Imports</button>
+                        <button class="chart-toggle" data-view="net">Net Trade</button>
+                    </div>
+                </div>
+                <div class="chart-content" id="country-summary-chart"></div>
+            </section>
+        </div>
+
+        <!-- BEGIN: Trade Network Group Wrapper -->
+       <!-- BEGIN: Trade Network Group Wrapper -->
+        <div class="network-group-wrapper">
+            <div class="controls-section">
+                <!-- Header -->
+
+                <div class='controls-top-row'>
+                    <div class="controls-header">
+                        <h2>Interactive Controls</h2>
+                        <p>Use the timeline and filters below to explore global plastic waste trade patterns</p>
+                    </div>
+                    
+                    <!-- Filters first -->
+                    <div class="filters-section">
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="region-filter">REGION</label>
+                                <select id="region-filter">
+                                    <option value="all">All Regions</option>
+                                    <option value="north-america">North America</option>
+                                    <option value="europe">Europe</option>
+                                    <option value="asia">Asia</option>
+                                    <option value="africa">Africa</option>
+                                    <option value="oceania">Oceania</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="volume-filter">MIN. VOLUME</label>
+                                <select id="volume-filter">
+                                    <option value="all">All</option>
+                                    <option value="500000">500K+ kg</option>
+                                    <option value="1000000">1M+ kg</option>
+                                    <option value="2000000">2M+ kg</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="country-filter">FOCUS COUNTRY</label>
+                                <select id="country-filter">
+                                    <option value="all">All Countries</option>
+                                </select>
+                            </div>
+                            <button class="reset-button" id="reset-filters-button">
+                                <i>↻</i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Long timeline below filters -->
+                <div class="timeline-section">
+                    <div class="timeline-wrapper">
+                        <div class="timeline-header">
+                            <div class="timeline-label">Timeline</div>
+                            <div class="current-year-display">
+                                <span id="year-display">2002</span>
+                            </div>
+                        </div>
+                        <div class="timeline-track">
+                            <div id="year-slider">
+                                <input type="range" min="2002" max="2022" value="2002" step="1">
+                            </div>
+                            <div class="tick-marks"></div>
+                            <div class="year-labels-track"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rest of your dashboard grid... -->
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Top Row: Summary Chart + Map -->
+                <section class="chart-panel flow-panel">
+                    <div class="panel-header">
+                        <h3>Trade Flow Network</h3>
+                        <p class="chart-subtitle">Major bilateral trade relationships</p>
+                    </div>
+                    <div class="chart-content" id="sankey-chart"></div>
+                </section>
+                <section class="chart-panel map-panel">
+                    <div class="panel-header">
+                        <h3>Global Trade Network</h3>
+                        <div class="map-legend" id="map-legend"></div>
+                    </div>
+                    <div id="map-container"></div>
+                </section>
+            </div>
+        </div>
+        <!-- END: Trade Network Group Wrapper -->
+
+        <!-- Insights Panel -->
+        <!-- <section class="insights-section">
+            <div class="insights-content">
+                <h2>Key Insights</h2>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h4>China's Import Ban (2018)</h4>
+                        <p>China's "National Sword" policy shifted 45% of global plastic waste flows to Southeast Asia overnight.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Wealthy Exporters</h4>
+                        <p>High-income countries consistently export the most plastic waste, often to countries with limited processing infrastructure.</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Regional Shifts</h4>
+                        <p>Post-2018 flows redirected to Malaysia, Vietnam, and Thailand, many of which later imposed their own restrictions.</p>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+    </div>
+
+    <footer>
+        <p>Data: UN Comtrade Database (HS Code 3915) | Created with D3.js | <span id="current-year"></span></p>
+    </footer>
+
+    <!-- JS Components -->
+    <script src="src/js/components/map.js"></script>
+    <script src="src/js/components/slider.js"></script>
+    <script src="src/js/components/flowArrows.js"></script>
+    <script src="src/js/components/sankey.js"></script>
+
+    <script src="src/js/components/countrySummary.js"></script>
+    <script src="src/js/components/filters.js"></script>
+    <script src="src/js/main.js"></script>
+</body>
+</html>

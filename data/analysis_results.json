@@ -1,0 +1,245 @@
+{
+  "dataset_span": "2002-2024",
+  "total_years": 23,
+  "avg_annual_tonnes_million": 10.554279360668174,
+  "avg_annual_value_billion": 4.191430835189827,
+  "total_countries": 47,
+  "total_weight_million_tonnes": 242.74842529536798,
+  "total_value_billion": 96.40290920936602,
+  "total_flows": 22712,
+  "yearly_totals": {
+    "2002": {
+      "weight_kg": 4805485711.811001,
+      "weight_tonnes": 4805485.7118110005,
+      "weight_million_tonnes": 4.805485711811001,
+      "value_usd": 1326588917.7149997,
+      "value_million_usd": 1326.5889177149998,
+      "value_billion_usd": 1.3265889177149996,
+      "countries": 47,
+      "flows": 717
+    },
+    "2003": {
+      "weight_kg": 5709236370.609,
+      "weight_tonnes": 5709236.370609,
+      "weight_million_tonnes": 5.709236370609,
+      "value_usd": 1697474336.797,
+      "value_million_usd": 1697.474336797,
+      "value_billion_usd": 1.697474336797,
+      "countries": 47,
+      "flows": 760
+    },
+    "2004": {
+      "weight_kg": 9520710599.394,
+      "weight_tonnes": 9520710.599394,
+      "weight_million_tonnes": 9.520710599393999,
+      "value_usd": 2391028177.268001,
+      "value_million_usd": 2391.028177268001,
+      "value_billion_usd": 2.391028177268001,
+      "countries": 47,
+      "flows": 847
+    },
+    "2005": {
+      "weight_kg": 9114739726.103,
+      "weight_tonnes": 9114739.726103,
+      "weight_million_tonnes": 9.114739726103,
+      "value_usd": 3285699391.1069994,
+      "value_million_usd": 3285.6993911069994,
+      "value_billion_usd": 3.2856993911069994,
+      "countries": 47,
+      "flows": 901
+    },
+    "2006": {
+      "weight_kg": 10557794866.017998,
+      "weight_tonnes": 10557794.866017997,
+      "weight_million_tonnes": 10.557794866017998,
+      "value_usd": 4031174400.0420003,
+      "value_million_usd": 4031.1744000420003,
+      "value_billion_usd": 4.0311744000420004,
+      "countries": 47,
+      "flows": 932
+    },
+    "2007": {
+      "weight_kg": 11597927481.362001,
+      "weight_tonnes": 11597927.481362002,
+      "weight_million_tonnes": 11.597927481362001,
+      "value_usd": 4808400309.211998,
+      "value_million_usd": 4808.400309211998,
+      "value_billion_usd": 4.808400309211998,
+      "countries": 47,
+      "flows": 925
+    },
+    "2008": {
+      "weight_kg": 13849166676.253002,
+      "weight_tonnes": 13849166.676253002,
+      "weight_million_tonnes": 13.849166676253002,
+      "value_usd": 5948820486.302,
+      "value_million_usd": 5948.820486302,
+      "value_billion_usd": 5.948820486302,
+      "countries": 47,
+      "flows": 974
+    },
+    "2009": {
+      "weight_kg": 14951488289.307999,
+      "weight_tonnes": 14951488.289307998,
+      "weight_million_tonnes": 14.951488289308,
+      "value_usd": 5228587824.038999,
+      "value_million_usd": 5228.587824038998,
+      "value_billion_usd": 5.228587824038999,
+      "countries": 47,
+      "flows": 956
+    },
+    "2010": {
+      "weight_kg": 15836207341.258001,
+      "weight_tonnes": 15836207.341258,
+      "weight_million_tonnes": 15.836207341258001,
+      "value_usd": 6176559781.679003,
+      "value_million_usd": 6176.559781679003,
+      "value_billion_usd": 6.1765597816790025,
+      "countries": 47,
+      "flows": 930
+    },
+    "2011": {
+      "weight_kg": 15037692398.263002,
+      "weight_tonnes": 15037692.398263002,
+      "weight_million_tonnes": 15.037692398263003,
+      "value_usd": 7024245553.680005,
+      "value_million_usd": 7024.245553680005,
+      "value_billion_usd": 7.0242455536800055,
+      "countries": 47,
+      "flows": 971
+    },
+    "2012": {
+      "weight_kg": 15124157711.282999,
+      "weight_tonnes": 15124157.711282998,
+      "weight_million_tonnes": 15.124157711282999,
+      "value_usd": 6891425064.848001,
+      "value_million_usd": 6891.425064848,
+      "value_billion_usd": 6.891425064848001,
+      "countries": 47,
+      "flows": 984
+    },
+    "2013": {
+      "weight_kg": 12781880666.794998,
+      "weight_tonnes": 12781880.666794999,
+      "weight_million_tonnes": 12.781880666794999,
+      "value_usd": 6446574559.185997,
+      "value_million_usd": 6446.574559185997,
+      "value_billion_usd": 6.446574559185997,
+      "countries": 47,
+      "flows": 969
+    },
+    "2014": {
+      "weight_kg": 15548423822.392998,
+      "weight_tonnes": 15548423.822392998,
+      "weight_million_tonnes": 15.548423822392998,
+      "value_usd": 6795942566.4080105,
+      "value_million_usd": 6795.942566408011,
+      "value_billion_usd": 6.79594256640801,
+      "countries": 47,
+      "flows": 1000
+    },
+    "2015": {
+      "weight_kg": 14187191585.807999,
+      "weight_tonnes": 14187191.585807998,
+      "weight_million_tonnes": 14.187191585807998,
+      "value_usd": 5532809502.525998,
+      "value_million_usd": 5532.809502525998,
+      "value_billion_usd": 5.532809502525998,
+      "countries": 47,
+      "flows": 1036
+    },
+    "2016": {
+      "weight_kg": 14428254075.515995,
+      "weight_tonnes": 14428254.075515995,
+      "weight_million_tonnes": 14.428254075515994,
+      "value_usd": 4954252010.468,
+      "value_million_usd": 4954.252010468001,
+      "value_billion_usd": 4.954252010468,
+      "countries": 47,
+      "flows": 994
+    },
+    "2017": {
+      "weight_kg": 13211052744.195,
+      "weight_tonnes": 13211052.744195,
+      "weight_million_tonnes": 13.211052744195,
+      "value_usd": 4765978786.642,
+      "value_million_usd": 4765.978786642,
+      "value_billion_usd": 4.765978786642,
+      "countries": 47,
+      "flows": 1126
+    },
+    "2018": {
+      "weight_kg": 7952211353.421997,
+      "weight_tonnes": 7952211.353421997,
+      "weight_million_tonnes": 7.952211353421997,
+      "value_usd": 3036167621.618,
+      "value_million_usd": 3036.167621618,
+      "value_billion_usd": 3.036167621618,
+      "countries": 47,
+      "flows": 1105
+    },
+    "2019": {
+      "weight_kg": 6658825307.539999,
+      "weight_tonnes": 6658825.307539999,
+      "weight_million_tonnes": 6.658825307539999,
+      "value_usd": 2448148525.203,
+      "value_million_usd": 2448.148525203,
+      "value_billion_usd": 2.448148525203,
+      "countries": 47,
+      "flows": 1149
+    },
+    "2020": {
+      "weight_kg": 6454107566.08,
+      "weight_tonnes": 6454107.56608,
+      "weight_million_tonnes": 6.45410756608,
+      "value_usd": 2087302262.2890005,
+      "value_million_usd": 2087.3022622890007,
+      "value_billion_usd": 2.0873022622890005,
+      "countries": 47,
+      "flows": 1079
+    },
+    "2021": {
+      "weight_kg": 6185288998.3899975,
+      "weight_tonnes": 6185288.9983899975,
+      "weight_million_tonnes": 6.185288998389997,
+      "value_usd": 2788248039.787003,
+      "value_million_usd": 2788.248039787003,
+      "value_billion_usd": 2.788248039787003,
+      "countries": 47,
+      "flows": 1078
+    },
+    "2022": {
+      "weight_kg": 6244056970.371,
+      "weight_tonnes": 6244056.9703710005,
+      "weight_million_tonnes": 6.244056970371,
+      "value_usd": 3498413698.565996,
+      "value_million_usd": 3498.413698565996,
+      "value_billion_usd": 3.4984136985659964,
+      "countries": 47,
+      "flows": 1095
+    },
+    "2023": {
+      "weight_kg": 6500227681.997995,
+      "weight_tonnes": 6500227.681997996,
+      "weight_million_tonnes": 6.500227681997996,
+      "value_usd": 2723654902.9039993,
+      "value_million_usd": 2723.6549029039993,
+      "value_billion_usd": 2.7236549029039994,
+      "countries": 47,
+      "flows": 1098
+    },
+    "2024": {
+      "weight_kg": 6492297351.198001,
+      "weight_tonnes": 6492297.351198001,
+      "weight_million_tonnes": 6.492297351198001,
+      "value_usd": 2515412491.079998,
+      "value_million_usd": 2515.412491079998,
+      "value_billion_usd": 2.515412491079998,
+      "countries": 47,
+      "flows": 1086
+    }
+  },
+  "peak_weight_year": "2010",
+  "peak_value_year": "2011",
+  "growth_rate_percent": 35.10179283732187
+}
