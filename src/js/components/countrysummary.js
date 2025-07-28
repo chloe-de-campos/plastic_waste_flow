@@ -345,3 +345,5 @@ function createCountrySummaryChart() {
     
     return { updateChart };
 }
+
+console.log("✅ countrySummary.js loaded, createCountrySummaryChart available:", typeof createCountrySummaryChart);

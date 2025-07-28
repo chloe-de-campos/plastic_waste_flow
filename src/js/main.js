@@ -35,12 +35,28 @@ async function init() {
         }
         
         // Step 3.5: Initialize Country Summary Chart
-        if (typeof createCountrySummaryChart === 'function') {
-            window.state.countrySummary = createCountrySummaryChart();
-            window.state.countrySummary.updateChart(flowData, years[0]);
-        } else {
-            console.error("❌ createCountrySummaryChart function not found");
+        console.log("🔍 Available functions:", typeof createCountrySummaryChart);
+        console.log("🔍 Window keys:", Object.keys(window).filter(key => key.includes('Country') || key.includes('Summary')));
+
+        // Step 3.5: Initialize Country Summary Chart with retry logic
+        function initCountrySummaryWithRetry(attempt = 1, maxAttempts = 5) {
+            console.log(`🔍 Attempt ${attempt} to initialize country summary chart...`);
+            
+            if (typeof createCountrySummaryChart === 'function') {
+                console.log("✅ Creating country summary chart...");
+                window.state.countrySummary = createCountrySummaryChart();
+                window.state.countrySummary.updateChart(flowData, years[0]);
+                console.log("✅ Country summary chart initialized successfully");
+            } else if (attempt < maxAttempts) {
+                console.log(`⏳ Function not ready, retrying in 100ms (attempt ${attempt}/${maxAttempts})...`);
+                setTimeout(() => initCountrySummaryWithRetry(attempt + 1, maxAttempts), 100);
+            } else {
+                console.error("❌ createCountrySummaryChart function not found after", maxAttempts, "attempts");
+                console.error("Available functions:", Object.keys(window).filter(key => typeof window[key] === 'function'));
+            }
         }
+
+        initCountrySummaryWithRetry();
         
         // Step 4: Initialize map components
         console.log("🗺️ Initializing map...");
