@@ -1,3 +1,5 @@
+console.log("🔄 countrySummary.js file is loading...");
+
 function createCountrySummaryChart() {
     let currentView = 'exports'; // 'exports', 'imports', 'net'
     
