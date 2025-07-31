@@ -1,11 +1,37 @@
 function initSankey() {
- 
     
- function updateSankey(yearData) {
-        const container = d3.select('#sankey-chart');
+    function updateSankey(yearData, containerId = 'sankey-chart', options = {}) {
+        const container = d3.select(`#${containerId}`);
         container.html('');
+        // Add a flexbox wrapper for vertical centering
 
-        // Filter for valid weight data
+        let flexWrapper = container.select('.sankey-container');
+
+
+        if (!flexWrapper.node()) {
+            flexWrapper = container.append('div')
+                .attr('class', 'sankey-container')
+                .style('height', '100%')
+                .style('weidth', '100%');
+        } else {
+            flexWrapper.html('');
+        }
+
+        if (containerId.includes('modal')) {
+              if (!flexWrapper.node()) {
+                flexWrapper = container.append('div')
+                    .style('display', 'flex')
+                    .style('align-items', 'center')
+                    .style('justify-content', 'center')
+                    .style('height', '100%');
+            } else {
+                flexWrapper.html('');
+            }
+        }
+        
+        
+        console.log(`📊 Updating Sankey in container: ${containerId} with ${yearData.length} flows`);
+
         const validFlows = yearData.filter(function(d) {
             return d.weight_kg && 
                 d.weight_kg > 0 && 
@@ -27,13 +53,10 @@ function initSankey() {
             return;
         }
 
-        // Aggregate flows by country pair - keeping China, Hong Kong separate
         const flowMap = {};
         const countryNames = {};
         
-        
         validFlows.forEach(function(flow) {
-            // Keep original country names - no combining
             countryNames[flow.source_country] = flow.source_name || flow.source_country;
             countryNames[flow.target_country] = flow.target_name || flow.target_country;
             
@@ -42,27 +65,6 @@ function initSankey() {
             flowMap[key] += flow.weight_kg;
         });
         
-
-        // Add this right after loading validFlows:
-console.log("Checking for China-Hong Kong flows...");
-
-// Check all China/HK combinations in raw data
-const chinaHKFlows = yearData.filter(d => {
-    const source = d.source_country;
-    const target = d.target_country;
-    return (source === 'CHN' || source === 'HKG') && 
-           (target === 'CHN' || target === 'HKG');
-});
-
-console.log("Raw China-HK flows found:", chinaHKFlows.length);
-chinaHKFlows.forEach(flow => {
-    console.log(`${flow.source_name} (${flow.source_country}) → ${flow.target_name} (${flow.target_country}): ${flow.weight_kg || flow.trade_value}kg`);
-});
-
-// Check if they have different country codes
-const uniqueCountryCodes = [...new Set(yearData.map(d => d.source_country).concat(yearData.map(d => d.target_country)))];
-console.log("All country codes in data:", uniqueCountryCodes.filter(code => code.includes('CHN') || code.includes('HKG')));
-        // Calculate net flows to avoid double-showing bidirectional trade
         const netFlows = [];
         const processed = new Set();
         
@@ -75,7 +77,6 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
             const forwardFlow = flowMap[key] || 0;
             const reverseFlow = flowMap[reverseKey] || 0;
             
-            // Keep the larger flow direction
             if (forwardFlow >= reverseFlow && forwardFlow > 0) {
                 netFlows.push({
                     source: source,
@@ -94,17 +95,14 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
             processed.add(reverseKey);
         });
 
-        // Get top 12 flows for clean visualization
+        // DYNAMIC flow count based on container - MORE flows for modal
+        const flowCount = containerId.includes('modal') ? 21 : 8; // Adjust to 20 for modal, 8 for default
         const topFlows = netFlows
             .sort((a, b) => b.value - a.value)
-            .slice(0, 8);
+            .slice(0, flowCount);
         
-        console.log('Top flows by weight (China/HK separate):');
-        topFlows.forEach((f, i) => 
-            console.log(`${i+1}. ${countryNames[f.source]} → ${countryNames[f.target]}: ${formatWeight(f.value)}`)
-        );
+        console.log(`📈 Showing top ${topFlows.length} flows in ${containerId}`);
 
-        // Create nodes
         const exporters = new Set();
         const importers = new Set();
         
@@ -141,23 +139,31 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
             };
         });
 
-        // Set up SVG with more margin for external labels
         const containerRect = container.node().getBoundingClientRect();
         const width = containerRect.width;
-        const height = 400;
-        const margin = { top: 60, right: 150, bottom: 40, left: 150 };
+        // Adjust height: Significantly more for modal
+        const height = containerId.includes('modal') ? 700 : 400; // Increased to 700px for modal
+        
+        // Adjust margins for labels and overall chart breathing room
+        // Stretch lines more for modal by increasing left/right margins
+        const margin = containerId.includes('modal')
+            ? { top: 40, right: 260, bottom: 40, left: 260 } // Stretch more in modal
+            : { top: 40, right: 180, bottom: 40, left: 180 };
 
-        const svg = container
+        const svg = flexWrapper
             .append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('width', '100%')
+            // .attr('height', 'auto')
             .attr('viewBox', `0 0 ${width} ${height}`)
-            .style('background', 'transparent');
+            .style('background', 'transparent')
+            .style('max-width', '100%')
+            .style('max-height', '100%');
 
-        // Simple gradient from blue to orange
+        // Create unique gradient ID for each container to avoid conflicts
         const defs = svg.append('defs');
+        const gradientId = `gradient-${containerId.replace(/-/g, '_')}`;
         const linkGradient = defs.append('linearGradient')
-            .attr('id', 'simpleGradient')
+            .attr('id', gradientId)
             .attr('x1', '0')
             .attr('y1', '0')
             .attr('x2', width)
@@ -174,12 +180,13 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
             .attr('stop-color', '#f97316')
             .attr('stop-opacity', 0.8);
 
-        // Create Sankey layout
+        // Increase nodePadding for modal (larger font) or allow override via options
+        const nodePadding = options.nodePadding || (containerId.includes('modal') ? 32 : 16);
         const sankey = d3.sankey()
             .nodeId(d => d.id)
             .nodeAlign(d3.sankeyLeft)
             .nodeWidth(20)
-            .nodePadding(8)
+            .nodePadding(nodePadding)
             .extent([
                 [margin.left, margin.top], 
                 [width - margin.right, height - margin.bottom]
@@ -200,24 +207,20 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
                 }
             });
 
-            // FIXED: Better link width scaling for more visible thickness
             const weights = links.map(d => d.value);
             const minWeight = d3.min(weights);
             const maxWeight = d3.max(weights);
             
-            console.log(`Weight range: ${formatWeight(minWeight)} to ${formatWeight(maxWeight)}`);
-            
-            // More aggressive scaling to make differences more visible
-            const linkWidthScale = d3.scaleSqrt() // Square root scale for better visual distinction
+            const linkWidthScale = d3.scaleSqrt()
                 .domain([minWeight, maxWeight])
-                .range([8, 40]); // Much wider range: 8px minimum, 40px maximum
+                .range([8, 40]);
 
             svg.append("g")
                 .selectAll("path")
                 .data(sankeyData.links)
                 .join("path")
                 .attr("d", d3.sankeyLinkHorizontal())
-                .attr("stroke", "url(#simpleGradient)")
+                .attr("stroke", `url(#${gradientId})`)
                 .attr("stroke-width", d => linkWidthScale(d.value))
                 .attr("fill", "none")
                 .attr("opacity", 0.7)
@@ -241,7 +244,6 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
                     svg.select(".simple-tooltip").remove();
                 });
 
-            // Draw nodes - clean rectangles with NO rounded corners
             svg.append("g")
                 .selectAll("rect")
                 .data(sankeyData.nodes)
@@ -251,8 +253,8 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
                 .attr("height", d => Math.max(6, d.y1 - d.y0))
                 .attr("width", d => d.x1 - d.x0)
                 .attr("fill", d => d.type === 'exporter' ? '#3b82f6' : '#ef4444')
-                .attr("rx", 0) // NO rounded corners
-                .attr("stroke", "none") // NO outlines
+                .attr("rx", 0)
+                .attr("stroke", "none")
                 .on("mouseover", function(event, d) {
                     d3.select(this).attr("opacity", 0.8);
                 })
@@ -260,28 +262,58 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
                     d3.select(this).attr("opacity", 1);
                 });
 
-            // Labels pushed OUTSIDE the chart area
+            // Labels pushed OUTSIDE the chart area with more breathing room
+            // Use options.fontSize if provided, else default to 13px (dashboard) or 18px (modal)
+            const labelFontSize = options.fontSize || (containerId.includes('modal') ? 18 : 13);
+            // Dynamically adjust label offset based on font size
+            const labelOffset = Math.round(labelFontSize * 2); // 1.6x font size for spacing
             svg.append("g")
                 .selectAll("text")
                 .data(sankeyData.nodes)
                 .join("text")
                 .attr("x", function(d) { 
-                    return d.type === 'exporter' ? d.x0 - 15 : d.x1 + 15; 
+                    return d.type === 'exporter' ? d.x0 - labelOffset : d.x1 + labelOffset;
                 })
                 .attr("y", d => (d.y1 + d.y0) / 2)
-                .attr("dy", "0.35em")
+                // Scale dy with font size so gap increases with font size
+                .attr("dy", (d) => (0.35 * labelFontSize / 13) + "em")
                 .attr("text-anchor", d => d.type === 'exporter' ? "end" : "start")
                 .text(d => d.name)
                 .attr("font-family", "Inter, sans-serif")
-                .attr("font-size", "14px")
-                .attr("font-weight", "500")
+                .attr("font-size", labelFontSize + "px")
+                .attr("font-weight", "200")
                 .attr("fill", "white")
                 .style("text-shadow", "0 1px 2px rgba(0,0,0,0.8)");
 
-            console.log("✅ Simple weight-based Sankey created with thicker lines!");
+            // Add "Exporters" and "Importers" labels
+            const axisFontSize = options.fontSize ? Math.max(14, options.fontSize - 2) : (containerId.includes('modal') ? 18 : 12);
+            svg.append("text")
+                .attr("x", margin.left + 20) // Positioned to the left of exporter labels
+                .attr("y", margin.top - 20) // Above the top node
+                .attr("text-anchor", "end")
+                .attr("font-family", "Inter, sans-serif")
+                .attr("font-size", axisFontSize + "px")
+                .attr("letter-spacing", "0.1rem")
+                .attr("font-weight", "700")
+                .attr("fill", "#3b82f6")
+                .text("MAJOR EXPORTERS");
+
+            svg.append("text")
+                .attr("x", width - margin.right - 20 ) // Positioned to the right of importer labels
+                .attr("y", margin.top - 20) // Above the top node
+                .attr("text-anchor", "start")
+                .attr("font-family", "Inter, sans-serif")
+                .attr("font-size", axisFontSize + "px")
+                .attr("letter-spacing", "0.1rem")
+                .attr("font-weight", "700")
+                .attr("fill", "#ef4444")
+                .text("MAJOR IMPORTERS");
+
+
+            console.log(`✅ Sankey created in ${containerId} with ${topFlows.length} flows`);
             
         } catch (error) {
-            console.error("❌ Sankey error:", error);
+            console.error("❌ Sankey error in", containerId, ":", error);
             svg.append('text')
                 .attr('x', width/2)
                 .attr('y', height/2)
@@ -291,6 +323,8 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
                 .text('Error loading chart: ' + error.message);
         }
     }
+
+  
     // Tooltip creation (only once per hover)
     function createSimpleTooltip(event, d, svg) {
         svg.select('.simple-tooltip').remove();
@@ -349,15 +383,12 @@ console.log("All country codes in data:", uniqueCountryCodes.filter(code => code
         tooltip.attr("transform", `translate(${x - bbox.x},${y - bbox.y})`);
     }
 
-    // Helper function for weight formatting
+  
     function formatWeight(weight) {
         if (weight >= 1000000) return `${(weight / 1000000).toFixed(1)}M kg`;
         if (weight >= 1000) return `${(weight / 1000).toFixed(0)}K kg`;
         return `${weight.toFixed(0)} kg`;
     }
 
-    const returnValue = { updateSankey };
-    console.log("📊 initCharts about to return:", returnValue);
-
-    return returnValue;
+    return { updateSankey };
 }

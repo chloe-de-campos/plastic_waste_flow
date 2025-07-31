@@ -21,9 +21,9 @@
                 The Plastic
                 <span class="gradient-text">Waste Trade</span>
             </h1>
-            <!-- <p class="hero-subtitle">
-                127 million tons of plastic waste across borders every year
-            </p> -->
+            <p class="hero-intro">
+                Every year, wealthy nations ship millions of tons of plastic waste to developing countries in what researchers call "waste colonialism." When China banned imports in 2018, global emissions jumped by 4.5 million tons of CO2 as recycling rates plummeted and flows shifted to Southeast Asia. A <a href="https://eia-international.org/wp-content/uploads/2024-EIA-Dirty-Deals-Part-One.pdf" target="_blank" rel="noopener noreferrer" class="hero-link">2024 investigation by the Environmental Investigation Agency</a> reveals how this $4 billion trade is riddled with fraud, environmental crimes, and human rights violations.
+            </p>
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-number">11M</div>
@@ -34,141 +34,122 @@
                     <div class="stat-label">Countries involved</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number">$4B</div>
-                    <div class="stat-label">Market value</div>
+                    <div class="stat-number">9%</div>
+                    <div class="stat-label">Actually recycled</div>
                 </div>
             </div>
         </div>
     </header>
-
+    
+    <!-- Timeline Connection Element - Independent of any container -->
+    <div class="timeline-connection-container" id="timeline-connection-container">
+        <svg class="timeline-connection-svg" id="timeline-connection-svg"></svg>
+    </div>
     
     <div class="dashboard-container">
-        <!-- Global Controls Bar -->
-
+        <!-- Top Panel: Country Summary Chart -->
         <div class="dashboard-intro">
             <section class="chart-panel summary-panel">
-                <div class="panel-header">
+                <div class="panel-header" style="padding: var(--space-lg) var(--space-lg) 0">
                     <h3>Major Trading Countries Over Time</h3>
                     <div class="chart-controls">
-                        <button class="chart-toggle active" data-view="exports">Exports</button>
-                        <button class="chart-toggle" data-view="imports">Imports</button>
-                        <button class="chart-toggle" data-view="net">Net Trade</button>
+                        <button class="chart-toggle btn btn-active" data-view="exports">Exports</button>
+                        <button class="chart-toggle btn" data-view="imports">Imports</button>
+                        <button class="chart-toggle btn" data-view="net">Net Trade</button>
                     </div>
                 </div>
-                <div class="chart-content" id="country-summary-chart"></div>
+                <div class="chart-content" id="country-summary-chart">
+                    <!-- This will contain the year indicator that the network emerges from -->
+                    <div class="year-indicator" id="chart-year-indicator">
+                        <span id="chart-year-display">Chart Loading...</span>
+                    </div>
+                </div>
+                
             </section>
+
+            <div class="year-connection-arrow" id="year-connection-arrow">
+                <div class="arrow-shaft"></div>
+                <div class="arrow-head"></div>
+            </div>
         </div>
 
-        <!-- BEGIN: Trade Network Group Wrapper -->
-       <!-- BEGIN: Trade Network Group Wrapper -->
-        <div class="network-group-wrapper">
+        <!-- Network Group Wrapper - This sits below and connects to the year indicator -->
+        <div class="network-group-wrapper" id="network-group-wrapper">
             <div class="controls-section">
-                <!-- Header -->
-
                 <div class='controls-top-row'>
                     <div class="controls-header">
-                        <h2>Interactive Controls</h2>
-                        <p>Use the timeline and filters below to explore global plastic waste trade patterns</p>
+                        <div class="current-year-display">
+                            <h3 class="hero-title">2002</h3>
+                        </div>
                     </div>
                     
-                    <!-- Filters first -->
-                    <div class="filters-section">
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="region-filter">REGION</label>
-                                <select id="region-filter">
-                                    <option value="all">All Regions</option>
-                                    <option value="north-america">North America</option>
-                                    <option value="europe">Europe</option>
-                                    <option value="asia">Asia</option>
-                                    <option value="africa">Africa</option>
-                                    <option value="oceania">Oceania</option>
-                                </select>
+                    <!-- Timeline Section -->
+                    <div class="timeline-section">
+                        <div class="timeline-wrapper">
+                            <div class="timeline-header">
+                                <div class="timeline-label">Timeline</div>
+                                <div class="timeline-year-display" id="timeline-year-target">
+                                    <span id="timeline-year-display">2002</span>
+                                </div>
                             </div>
-                            <div class="filter-group">
-                                <label for="volume-filter">MIN. VOLUME</label>
-                                <select id="volume-filter">
-                                    <option value="all">All</option>
-                                    <option value="500000">500K+ kg</option>
-                                    <option value="1000000">1M+ kg</option>
-                                    <option value="2000000">2M+ kg</option>
-                                </select>
+                            <div class="timeline-track">
+                                <div id="year-slider">
+                                    <input type="range" min="2002" max="2022" value="2002" step="1">
+                                </div>
+                                <div class="tick-marks"></div>
+                                <div class="year-labels-track"></div>
                             </div>
-                            <div class="filter-group">
-                                <label for="country-filter">FOCUS COUNTRY</label>
-                                <select id="country-filter">
-                                    <option value="all">All Countries</option>
-                                </select>
-                            </div>
-                            <button class="reset-button" id="reset-filters-button">
-                                <i>↻</i> Reset
-                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Long timeline below filters -->
-                <div class="timeline-section">
-                    <div class="timeline-wrapper">
-                        <div class="timeline-header">
-                            <div class="timeline-label">Timeline</div>
-                            <div class="current-year-display">
-                                <span id="year-display">2002</span>
-                            </div>
+                <!-- Main Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Trade Flow Network -->
+                    <section class="chart-panel flow-panel">
+                        <div class="panel-header">
+                            <h3>Trade Flow Network</h3>
+                            <p class="chart-subtitle">Major bilateral trade relationships</p>
+                            <p class="chart-caption">
+                                Line thickness shows volume in kilograms. Hover over flows for details.
+                            </p>
                         </div>
-                        <div class="timeline-track">
-                            <div id="year-slider">
-                                <input type="range" min="2002" max="2022" value="2002" step="1">
-                            </div>
-                            <div class="tick-marks"></div>
-                            <div class="year-labels-track"></div>
+                        <div class="chart-content" id="sankey-chart"></div>
+                    </section>
+
+                    <!-- Global Map -->
+                    <section class="chart-panel map-panel">
+                        <div class="panel-header">
+                            <h3>Global Trade Network</h3>
+                            <p class="chart-subtitle">Countries colored by net trade balance</p>
+                            <p class="chart-caption">
+                                Click countries for details. Arrows show major trade flows for the selected year.
+                            </p>
                         </div>
-                    </div>
+                        <div class="chart-content">
+                            <div class="map-legend" id="map-legend"></div>
+                            <div id="map-container"></div>
+                        </div>
+                    </section>
                 </div>
+
+                
             </div>
             
-            <!-- Rest of your dashboard grid... -->
-            <!-- Main Dashboard Grid -->
-            <div class="dashboard-grid">
-                <!-- Top Row: Summary Chart + Map -->
-                <section class="chart-panel flow-panel">
-                    <div class="panel-header">
-                        <h3>Trade Flow Network</h3>
-                        <p class="chart-subtitle">Major bilateral trade relationships</p>
-                    </div>
-                    <div class="chart-content" id="sankey-chart"></div>
-                </section>
-                <section class="chart-panel map-panel">
-                    <div class="panel-header">
-                        <h3>Global Trade Network</h3>
-                        <div class="map-legend" id="map-legend"></div>
-                    </div>
-                    <div id="map-container"></div>
-                </section>
-            </div>
         </div>
-        <!-- END: Trade Network Group Wrapper -->
 
-        <!-- Insights Panel -->
-        <!-- <section class="insights-section">
-            <div class="insights-content">
-                <h2>Key Insights</h2>
-                <div class="insights-grid">
-                    <div class="insight-card">
-                        <h4>China's Import Ban (2018)</h4>
-                        <p>China's "National Sword" policy shifted 45% of global plastic waste flows to Southeast Asia overnight.</p>
-                    </div>
-                    <div class="insight-card">
-                        <h4>Wealthy Exporters</h4>
-                        <p>High-income countries consistently export the most plastic waste, often to countries with limited processing infrastructure.</p>
-                    </div>
-                    <div class="insight-card">
-                        <h4>Regional Shifts</h4>
-                        <p>Post-2018 flows redirected to Malaysia, Vietnam, and Thailand, many of which later imposed their own restrictions.</p>
-                    </div>
+        <!-- Modal Structure -->
+        <div id="chart-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Chart Details</h3>
+                    <button class="modal-close btn-close">&times;</button>
+                </div>
+                <div class="modal-body" id="modal-chart-container">
+                    <!-- Chart will be cloned here -->
                 </div>
             </div>
-        </section> -->
+        </div>
     </div>
 
     <footer>
@@ -176,12 +157,16 @@
     </footer>
 
     <!-- JS Components -->
+    <script src="src/js/components/timelineConnector.js"></script>
     <script src="src/js/components/countrysummary.js"></script>
     <script src="src/js/components/map.js"></script>
     <script src="src/js/components/slider.js"></script>
     <script src="src/js/components/flowArrows.js"></script>
     <script src="src/js/components/sankey.js"></script>
     <script src="src/js/components/filters.js"></script>
+    <script src="src/js/components/countryDetails.js"></script>
+    <script src="src/js/components/modals.js"></script>
+    <script src="src/js/components/countryLabels.js"></script>
     <script src="src/js/main.js"></script>
 </body>
 </html>

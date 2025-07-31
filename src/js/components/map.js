@@ -26,10 +26,19 @@ const alpha3ToNumeric = {
 // ... rest of your map.js code
 // World map component
 function createWorldMap(worldData, containerId) {
-    console.log("Creating world map...");
+    console.log("Creating world map with containerId:", containerId);
     const container = d3.select(`#${containerId}`);
+    console.log("D3 container found:", container.node());
+    
+    if (!container.node()) {
+        console.error("Container not found:", containerId);
+        return null;
+    }
+    
     const containerNode = container.node();
     const rect = containerNode.getBoundingClientRect();
+    console.log("Container dimensions:", rect);
+
     const width = Math.max(600, rect.width || 600); // Minimum width
     const height = 400; // Fixed height for consistency
     
@@ -52,8 +61,19 @@ function createWorldMap(worldData, containerId) {
             .attr('viewBox', `0 0 ${width} ${height}`)
             .style('max-width', '100%')
             .style('height', '100%')
-            .style('background', 'transparent'); // Let the parent panel's background show
-const defs = svg.append('defs');
+            .style('background', 'transparent') // Let the parent panel's background show
+            .style('pointer-events', 'auto'); // Make sure this is set
+
+    // Add this right after creating the SVG:
+    svg.on('click', function(event) {
+        // Only allow the click to bubble up if it's not on a country
+        if (!event.target.classList.contains('country')) {
+            console.log('SVG background clicked, allowing bubble up');
+            // Don't stop propagation - let it bubble to the panel
+        }
+    });
+
+    const defs = svg.append('defs');
 
     // Add a drop shadow filter for hover effects (keep this, it's good)
     const dropShadow = defs.append('filter')
@@ -132,7 +152,7 @@ const defs = svg.append('defs');
             const alpha3 = numericToAlpha3[d.id];
                 d3.select(this)
                     .attr('stroke', '#ffffff')
-                    .attr('stroke-width', 2);
+                    .attr('stroke-width', 1);
                 
                 // Show tooltip
                 showCountryTooltip(event, d, alpha3, svg);
@@ -152,14 +172,23 @@ const defs = svg.append('defs');
             
 
     // Set up pan and zoom with callback to update arrows
+// Se   t up pan and zoom with callback to update arrows
     const zoom = d3.zoom()
         .scaleExtent([1, 8])
         .on('zoom', (event) => {
             mapGroup.attr('transform', event.transform);
             
-            // Update flow arrows if they exist
-            if (window.state && window.state.flowArrows) {
-                window.state.flowArrows.update(null, event.transform);
+            // Update flow arrows based on which container this map is in
+            if (containerId === 'map-container') {
+                // Original map - update original flow arrows
+                if (window.state && window.state.flowArrows) {
+                    window.state.flowArrows.update(null, event.transform);
+                }
+            } else if (containerId === 'modal-map-container') {
+                // Modal map - update modal flow arrows
+                if (window.state && window.state.modalFlowArrows) {
+                    window.state.modalFlowArrows.update(null, event.transform);
+                }
             }
         });
 
@@ -215,6 +244,7 @@ const defs = svg.append('defs');
     return {
         svg,
         projection,
+        zoom,
         updateCountryColors,
         highlightCountry(countryCode, highlight = true) {
             const numericId = alpha3ToNumeric[countryCode];

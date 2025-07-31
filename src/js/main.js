@@ -5,10 +5,23 @@ window.state = {};
 
 console.log("About to define init function");
 
+
+
+
 async function init() {
     console.log("🚀 INIT FUNCTION CALLED!");
     
     try {
+
+        // Add this to your main.js - make sure these are globally accessible
+        window.state = {
+            worldData: null,
+            currentYear: 2002,
+            netTradeData: {},
+            currentFlows: [],
+            mapInstance: null,
+            modalMapInstance: null
+        };
         // Step 1: Load data first
         console.log("📊 Loading data...");
         const worldData = await d3.json('https://unpkg.com/world-atlas@2/countries-110m.json');
@@ -17,6 +30,8 @@ async function init() {
         
         // Step 2: Set up basic state
         window.state.data = flowData;
+        window.state.worldData = worldData;
+        window.worldData = worldData;
         const years = Object.keys(flowData).map(Number).sort((a, b) => a - b);
         window.state.currentYear = years[0];
         
@@ -28,16 +43,12 @@ async function init() {
             window.state.charts = initSankey();
             console.log("✅ Sankey/Charts initialized");
             // Call timeline chart update with all data
-    
         
         } else {
             console.error("❌ initSankey function not found");
         }
         
-        // Step 3.5: Initialize Country Summary Chart
-        console.log("🔍 Available functions:", typeof createCountrySummaryChart);
-        console.log("🔍 Window keys:", Object.keys(window).filter(key => key.includes('Country') || key.includes('Summary')));
-
+        
         // Step 3.5: Initialize Country Summary Chart with retry logic
         function initCountrySummaryWithRetry(attempt = 1, maxAttempts = 5) {
             console.log(`🔍 Attempt ${attempt} to initialize country summary chart...`);
@@ -57,6 +68,8 @@ async function init() {
         }
 
         initCountrySummaryWithRetry();
+
+
         
         // Step 4: Initialize map components
         console.log("🗺️ Initializing map...");
@@ -66,8 +79,8 @@ async function init() {
         
         
         // Step 6: Initialize filters (this will trigger the first update)
-        console.log("🔍 Initializing filters...");
-        window.state.filters = initFilters(flowData, updateVisualizationWithFilteredData);
+        // console.log("🔍 Initializing filters...");
+        // window.state.filters = initFilters(flowData, updateVisualizationWithFilteredData);
         
         window.state.years = Object.keys(flowData).map(Number).sort((a, b) => a - b);
         window.state.currentYear = window.state.years[0];
@@ -77,6 +90,15 @@ async function init() {
             window.state.currentYear = year;
             updateVisualization(); // This will trigger filters.applyFilters
         });
+
+        // In your main.js init() function, add this after the slider initialization:
+
+        // Initialize year annotations
+        setTimeout(() => {
+            if (typeof initYearAnnotations === 'function') {
+                initYearAnnotations();
+            }
+        }, 2000); // Wait for everything else to load first
 
         // Step 7: Do initial update with first year's data
         console.log("🔄 Performing initial update...");
@@ -88,7 +110,23 @@ async function init() {
 
         initInteractiveInsights();
         createMapLegend('map-legend');
+
+        // Add this to your main.js init() function, after the map is created:
+
+        // Initialize country labels
+        console.log("🏷️ Initializing country labels...");
+        window.state.countryLabels = createCountryLabels();
+
         
+
+        // Also attach to modal map when it's created (in your modal code)
+        // window.state.countryLabels.attachToMap(modalMapInstance);
+
+         // Initialize modals AFTER everything is loaded
+        const countryDetails = new CountryDetails();
+        const chartModals = new ChartModals();
+        window.chartModals = chartModals; // Make it globally accessible
+
         console.log("🎉 Initialization complete!woop");
 
 
@@ -138,9 +176,9 @@ function updateVisualizationWithFilteredData(filteredData) {
 
 // Keep your existing updateVisualization function
 function updateVisualization() {
-    if (window.state.filters) {
-        window.state.filters.applyFilters();
-    }
+    // if (window.state.filters) {
+    //     window.state.filters.applyFilters();
+    // }
 }
 
 // Keep all your existing animation functions...
@@ -180,9 +218,9 @@ function startAnimation() {
         d3.select('#year-slider input').property('value', year);
         d3.select('#year-display').text(year);
         
-        if (window.state.filters) {
-            window.state.filters.applyFilters();
-        }
+        // if (window.state.filters) {
+        //     window.state.filters.applyFilters();
+        // }
     }, 1500);
 }
 
@@ -194,7 +232,27 @@ function stopAnimation() {
     d3.select('#play-button').html('<i class="fas fa-play"></i>');
 }
 
-// Keep your existing updateLegend and initSlider functions...
+// Add this function to your main.js or in the countrySummary.js
+function animateYearChange() {
+    // Pulse effect on all year displays
+    d3.selectAll('.current-year-display, .year-box')
+        .classed('updating', true)
+        .transition()
+        .duration(300)
+        .on('end', function() {
+            d3.select(this).classed('updating', false);
+        });
+    
+    // Briefly highlight connecting lines
+    d3.selectAll('.chart-panel')
+        .style('--connection-opacity', '1')
+        .transition()
+        .duration(1000)
+        .style('--connection-opacity', '0.6');
+}
+
+
+
 
 console.log("Setting up DOMContentLoaded listener");
 
@@ -247,9 +305,9 @@ function initInteractiveInsights() {
                 if (insight.year) {
                     window.state.currentYear = insight.year;
                     d3.select('#year-display').text(insight.year);
-                    if (window.state.filters) {
-                        window.state.filters.applyFilters();
-                    }
+                    // if (window.state.filters) {
+                    //     window.state.filters.applyFilters();
+                    // }
                 }
                 
                 // Highlight specific countries

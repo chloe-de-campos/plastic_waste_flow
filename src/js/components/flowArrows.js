@@ -52,8 +52,8 @@ function createFlowArrows(containerId, flowData, projection) {
             return;
         }
         
-        const netTrade = calculateNetTrade(currentData);
-        if(window.state.map) window.state.map.updateCountryColors(netTrade);
+        // const netTrade = calculateNetTrade(currentData);
+        // if(window.state.map) window.state.map.updateCountryColors(netTrade);
 
         const valueExtent = d3.extent(currentData, d => d.weight_kg || 0);
         const thicknessScale = d3.scaleSqrt().domain([0, valueExtent[1]]).range([0.5, 8]);
