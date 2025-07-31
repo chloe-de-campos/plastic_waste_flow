@@ -1,2 +1,3 @@
 data/TradeData*.json
 data/plastic_waste_flows_combined.json
+src/js/components/filters.js

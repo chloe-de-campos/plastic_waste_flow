@@ -69,7 +69,6 @@ async function init() {
 
         initCountrySummaryWithRetry();
 
-
         
         // Step 4: Initialize map components
         console.log("🗺️ Initializing map...");
